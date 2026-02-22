@@ -1,3 +1,5 @@
+import type { SignOptions } from 'jsonwebtoken';
+
 type ErrorType = string | APIErrorType;
 type APIErrorType = {
   details: ErrorDetail[];
@@ -5,4 +7,11 @@ type APIErrorType = {
 type ErrorDetail = {
   field?: string;
   message?: string;
+};
+
+type JWTSignOptions = Pick<SignOptions, 'expiresIn'>;
+
+type Payload = {
+  userId: number;
+  email: string;
 };
