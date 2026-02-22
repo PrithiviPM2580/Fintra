@@ -1,9 +1,10 @@
-import type { SignUpInput } from '@/validation/auth.validation.js';
+import type { SignInInput, SignUpInput } from '@/validation/auth.validation.js';
 import { emailExists } from '@/repositories/auth.route.js';
 import logger from '@/lib/logger.lib.js';
 import APIError from '@/lib/api-error.lib.js';
-import { hashPassword } from '@/lib/hassing.lib.js';
+import { comparePassword, hashPassword } from '@/lib/hassing.lib.js';
 import { createUser } from '@/repositories/auth.route.js';
+import { generateToken } from '@/lib/jwt.lib.js';
 
 export const signUpService = async (userData: SignUpInput) => {
   const { email, password, firstName, lastName } = userData;
@@ -27,4 +28,30 @@ export const signUpService = async (userData: SignUpInput) => {
   });
 
   return { user };
+};
+
+export const signInService = async (userData: SignInInput) => {
+  const { email, password } = userData;
+
+  const user = await emailExists(email);
+
+  if (!user) {
+    logger.error(`Email not found: ${email}`, {
+      label: 'AuthService',
+    });
+    throw new APIError(400, 'Invalid email or password');
+  }
+
+  const isPasswordValid = await comparePassword(password, user.password);
+
+  if (!isPasswordValid) {
+    logger.error(`Invalid password for email: ${email}`, {
+      label: 'AuthService',
+    });
+    throw new APIError(400, 'Invalid email or password');
+  }
+
+  const token = generateToken({ userId: user.id, email: user.email });
+
+  return { user, token };
 };
