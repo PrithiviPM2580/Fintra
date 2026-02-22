@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum TransactionType {
+  EXPENSE
+  INCOME
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique @db.VarChar(255)
+  firstname String   @db.VarChar(100)
+  lastname  String   @db.VarChar(100)
+  password  String   @db.VarChar(255)
+  contact   String?  @db.VarChar(15)
+  currency String   @db.VarChar(10) @default("USD")
+
+  accounts  Account[]
+  transactions Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account{
+  id Int @id @default(autoincrement())
+  userId Int
+  accountName String @db.VarChar(255)
+  accountNumber String @unique @db.VarChar(20)
+  accountBalance Float @default(0)
+
+  user User @relation(fields: [userId], references: [id])
+
+  createAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Transaction {
+  id Int @id @default(autoincrement())
+  userId Int
+  description String @db.VarChar(255)
+  status TransactionStatus @default(PENDING)
+  source String @db.VarChar(255)
+  amount Float
+  type TransactionType @default(INCOME)
+
+  user User @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
