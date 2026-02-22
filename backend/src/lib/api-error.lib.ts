@@ -1,14 +1,14 @@
 class APIError extends Error {
   public readonly statusCode: number;
   public readonly message: string;
-  public readonly isOperational: boolean;
-  public readonly error: ErrorType;
+  public readonly isOperational?: boolean;
+  public readonly error?: ErrorType;
 
   constructor(
     statusCode: number = 500,
     message: string = 'Internal Server Error',
     isOperational: boolean = true,
-    error: ErrorType,
+    error?: ErrorType,
     stack?: string,
   ) {
     super(message);
