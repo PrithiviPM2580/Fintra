@@ -53,5 +53,7 @@ export const signInService = async (userData: SignInInput) => {
 
   const token = generateToken({ userId: user.id, email: user.email });
 
-  return { user, token };
+  const { password: _, ...userWithoutPassword } = user;
+
+  return { user: userWithoutPassword, token };
 };
