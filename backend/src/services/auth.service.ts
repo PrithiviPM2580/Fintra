@@ -1,9 +1,9 @@
 import type { SignInInput, SignUpInput } from '@/validation/auth.validation.js';
-import { emailExists } from '@/repositories/auth.route.js';
+import { emailExists } from '@/repositories/auth.repository.js';
 import logger from '@/lib/logger.lib.js';
 import APIError from '@/lib/api-error.lib.js';
 import { comparePassword, hashPassword } from '@/lib/hassing.lib.js';
-import { createUser } from '@/repositories/auth.route.js';
+import { createUser } from '@/repositories/auth.repository.js';
 import { generateToken } from '@/lib/jwt.lib.js';
 
 export const signUpService = async (userData: SignUpInput) => {
@@ -51,9 +51,13 @@ export const signInService = async (userData: SignInInput) => {
     throw new APIError(400, 'Invalid email or password');
   }
 
-  const token = generateToken({ userId: user.id, email: user.email });
+  const token = generateToken({
+    userId: user.id,
+    email: user.email,
+    tokenVersion: user.tokenVersion,
+  });
 
-  const { password: _, ...userWithoutPassword } = user;
+  const { password: userPassword, ...userWithoutPassword } = user;
 
   return { user: userWithoutPassword, token };
 };
