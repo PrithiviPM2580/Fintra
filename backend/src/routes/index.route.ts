@@ -1,5 +1,6 @@
 import { Router, type Request, type Response } from 'express';
 import authRouter from './auth.route.js';
+import userRouter from './user.route.js';
 
 const router: Router = Router();
 
@@ -8,7 +9,7 @@ router.get('/', (req: Request, res: Response) => {
 });
 
 router.use('/api/auth', authRouter);
-
+router.use('/api/user', userRouter);
 router.use((req: Request, res: Response) => {
   res.status(404).json({ message: 'Route not found' });
 });
