@@ -11,7 +11,8 @@ type ErrorDetail = {
 
 type JWTSignOptions = Pick<SignOptions, 'expiresIn'>;
 
-type Payload = {
+interface Payload {
   userId: number;
   email: string;
-};
+  tokenVersion: number;
+}

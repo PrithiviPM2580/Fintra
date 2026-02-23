@@ -4,9 +4,7 @@ declare global {
   namespace Express {
     interface Request {
       rateLimit?: RateLimitInfo;
-      user?: {
-        userId: string;
-      };
+      user?: Omit<any, 'password'>;
     }
   }
 }
