@@ -32,6 +32,7 @@ model User {
   password  String   @db.VarChar(255)
   contact   String?  @db.VarChar(15)
   currency String?   @db.VarChar(10) @default("USD")
+  tokenVersion Int @default(0)
 
   accounts  Account[]
   transactions Transaction[]
